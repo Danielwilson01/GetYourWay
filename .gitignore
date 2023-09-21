@@ -35,4 +35,6 @@ build/
 ## Added
 /.idea
 /target
-
+application.properties
+*.properties
+/application.properties
