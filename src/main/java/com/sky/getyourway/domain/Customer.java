@@ -3,7 +3,7 @@ package com.sky.getyourway.domain;
 import javax.persistence.*;
 
 @Entity
-public class User {
+public class Customer {
 
     // ATTRIBUTES
     @Id  // sets ID to be a primary key
@@ -16,7 +16,7 @@ public class User {
 
     // CONSTRUCTORS
     // Defined Constructors
-    public User(String firstName, String lastName, String email, String password) {
+    public Customer(String firstName, String lastName, String email, String password) {
         super();
         // id not needed as it is automatically assigned and autoincrement as it has been flagged as primary key
         this.firstName = firstName;
@@ -26,7 +26,7 @@ public class User {
     }
 
     // Default Constructor
-    public User() {
+    public Customer() {
         super();
     }
 
@@ -85,7 +85,7 @@ public class User {
     // TO STRING METHOD
     @Override
     public String toString() {
-        return "User{" +
+        return "Customer{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
