@@ -1,4 +1,4 @@
-package com.sky.getyourway.dtos;
-
-public class BookingDTO {
-}
+//package com.sky.getyourway.dtos;
+//
+//public class BookingDTO {
+//}

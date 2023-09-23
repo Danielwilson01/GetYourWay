@@ -1,4 +1,4 @@
-package com.sky.getyourway.services;
-
-public interface BookingService {
-}
+//package com.sky.getyourway.services;
+//
+//public interface BookingService {
+//}
