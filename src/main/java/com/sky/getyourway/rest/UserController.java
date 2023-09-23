@@ -27,7 +27,7 @@ public class UserController  {
 
     @PostMapping("/register")
     // When user creates a new account and submits its data, a new user is created in our DB
-    public ResponseEntity<User> createPerson(@RequestBody User p) {
+    public ResponseEntity<User> registerUser(@RequestBody User p) {
         // Creates and adds the user to DB + responds to client with an HTTP status of created
         return new ResponseEntity<>(this.service.createUser(p), HttpStatus.CREATED);
     }
