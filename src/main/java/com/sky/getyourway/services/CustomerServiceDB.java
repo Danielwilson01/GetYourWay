@@ -30,11 +30,11 @@ public class CustomerServiceDB implements CustomerService {
 
     public boolean isEmailInUse(String email) {
         // returns TRUE if an email is found in the repo, otherwise returns FALSE
-        return this.repo.findByEmail(email) != null;
+        return this.repo.findByEmailIgnoreCase(email) != null;
     }
 
     @Override
-    public Customer getCustomer(int id) {
+    public Customer getCustomer(Integer id) {
         // Using Optional<> as it is possible we find no user with that id
         Optional<Customer> found = this.repo.findById(id);
         return found.get();
@@ -46,20 +46,23 @@ public class CustomerServiceDB implements CustomerService {
     }
 
     @Override
-    public Customer updateCustomer(Integer id, String firstName, String lastName, String email, String password) {
+    public Customer updateCustomer(Integer id, String firstName, String lastName, String email, String passwordCurrent, String passwordNew) {
         Customer toUpdate = this.getCustomer(id);  // gets the user to be updated
 
         if (firstName != null) toUpdate.setFirstName(firstName);
         if (lastName != null) toUpdate.setLastName(lastName);
         if (email != null) toUpdate.setEmail(email);
-        if (password != null) toUpdate.setPassword(password);
+        if (passwordCurrent != null && passwordNew != null && passwordCurrent.equals(toUpdate.getPassword())) {
+                toUpdate.setPassword(passwordNew);
+        }
 
+        System.out.println(toUpdate);
         return this.repo.save(toUpdate);
     }
 
     @Override
     public Customer findCustomerByEmail(String email) {
-        return this.repo.findByEmail(email);
+        return this.repo.findByEmailIgnoreCase(email);
     }
 
     @Override
@@ -68,7 +71,7 @@ public class CustomerServiceDB implements CustomerService {
             this.repo.deleteById(id);
             return "Customer with id " + id + " removed.";
         } else {
-            return "Customer with id " + id + " NOT FOUND.";
+            return  "NOT FOUND";
             }
         }
 }

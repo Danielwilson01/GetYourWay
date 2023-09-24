@@ -29,7 +29,9 @@ public class CustomerController {
     public ResponseEntity<Customer> registerCustomer(@RequestBody Customer c) {
         // Creates and adds the user to DB + responds to client with an HTTP status of created
         // NOTE: the try/catch is checking that the email  used to create new customer is NOT already assigned to other users
+
         try {
+            c.setEmail(c.getEmail().toLowerCase());
             return new ResponseEntity<>(this.service.createCustomer(c), HttpStatus.CREATED);
         } catch (EmailInUseException eiue) {
             return new ResponseEntity<>(HttpStatus.IM_USED);
@@ -46,7 +48,7 @@ public class CustomerController {
         System.out.println("EMAIL: " + email);
         System.out.println("password: " + password);
 
-        Customer found = this.service.findCustomerByEmail(email);
+        Customer found = this.service.findCustomerByEmail(email.toLowerCase());
         if (found == null) {
             // If no customer is found with that email, return a NOT FOUND status
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -63,11 +65,25 @@ public class CustomerController {
         return this.service.getAll();
     }
 
+    @PatchMapping("/update")
+    public ResponseEntity<Customer> updateCustomer(
+            @RequestParam(name = "id", required = true ) Integer id,
+            @RequestParam(name = "firstName", required = false) String firstName,
+            @RequestParam(name = "lastName", required = false) String lastName,
+            @RequestParam(name = "email", required = false) String email,
+            @RequestParam(name = "passwordCurrent", required = false) String passwordCurrent,
+            @RequestParam(name = "passwordNew", required = false) String passwordNew) {
 
-    // TODO : getCustomer passing in an ID
-    // TODO : update (shall we have separate one for email ?)
-    // TODO : deleteCustomer passing in an ID (might give the option to users to remove their profiles in future?)
-    // TODO : run Postman requests and write tests
+        Customer updated = this.service.updateCustomer(id, firstName, lastName, email, passwordCurrent, passwordNew);
+        if (updated == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
+        return ResponseEntity.ok(updated);
+    }
 
+    @DeleteMapping("/remove/{id}")
+    public ResponseEntity<String> removeCustomer(@PathVariable int id) {
+        String result = this.service.removeCustomer(id);
+        if ("NOT FOUND".equalsIgnoreCase(result)) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        else return ResponseEntity.ok(result);
+    }
 }
