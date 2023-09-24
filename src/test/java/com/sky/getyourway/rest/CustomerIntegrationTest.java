@@ -12,8 +12,10 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -49,6 +51,55 @@ public class CustomerIntegrationTest {
 
         mvc.perform(req).andExpect(checkStatus).andExpect(checkBody);
 
+    }
+
+    @Test
+    void testLoginSuccessful() throws Exception {
+        // customer with id1 in H2 db:  ('Jane', 'Doe', 'jane.doe@email.com', '123ABC'),
+        // Expected response from Jane Doe log in is the Customer object
+        Customer expectedResponse = new Customer(1, "Jane", "Doe", "jane.doe@email.com", "123ABC");
+        // We "translate" the expected response into JSON format
+        String expectedResponseJson = this.mapper.writeValueAsString(expectedResponse);
+
+        // Create the request to be tested and expected Status and Body
+        RequestBuilder request = get("/login").param("email", "jane.doe@email.com").param("password", "123ABC");
+        ResultMatcher expectedStatus = status().isOk();
+        ResultMatcher expectedBody = content().json(expectedResponseJson);
+
+        // Execute the request and set expectations
+        this.mvc.perform(request).andExpect(expectedStatus).andExpect(expectedBody);
+    }
+
+    @Test
+    void testLoginIncorrectEmail() throws Exception {
+        // customer with id1 in H2 db:  ('Jane', 'Doe', 'jane.doe@email.com', '123ABC'),
+        // Expected response from Jane Doe log in is the Customer object
+        Customer expectedResponse = new Customer(1, "Jane", "Doe", "jane.doe@email.com", "123ABC");
+        // We "translate" the expected response into JSON format
+        String expectedResponseJson = this.mapper.writeValueAsString(expectedResponse);
+
+        // Create the request to be tested and expected Status (no response body as we can't find any customer)
+        RequestBuilder request = get("/login").param("email", "wrong.email@email.com").param("password", "123ABC");
+        ResultMatcher expectedStatus = status().isNotFound();
+
+        // Execute the request and set expectations
+        this.mvc.perform(request).andExpect(expectedStatus);
+    }
+
+    @Test
+    void testLoginIncorrectPassword() throws Exception {
+        // customer with id1 in H2 db:  ('Jane', 'Doe', 'jane.doe@email.com', '123ABC'),
+        // Expected response from Jane Doe log in is the Customer object
+        Customer expectedResponse = new Customer(1, "Jane", "Doe", "jane.doe@email.com", "123ABC");
+        // We "translate" the expected response into JSON format
+        String expectedResponseJson = this.mapper.writeValueAsString(expectedResponse);
+
+        // Create the request to be tested and expected Status (no response body as we can't find any customer)
+        RequestBuilder request = get("/login").param("email", "jane.doe@email.com").param("password", "wrong_password");
+        ResultMatcher expectedStatus = status().isUnauthorized();
+
+        // Execute the request and set expectations
+        this.mvc.perform(request).andExpect(expectedStatus);
     }
 
 

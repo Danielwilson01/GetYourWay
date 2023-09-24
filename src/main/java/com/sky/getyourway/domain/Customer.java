@@ -16,6 +16,14 @@ public class Customer {
 
     // CONSTRUCTORS
     // Defined Constructors
+    public Customer(Integer id, String firstName, String lastName, String email, String password) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+    }
+
     public Customer(String firstName, String lastName, String email, String password) {
         super();
         // id not needed as it is automatically assigned and autoincrement as it has been flagged as primary key
