@@ -1,6 +1,7 @@
 package com.sky.getyourway.services;
 
 import com.sky.getyourway.domain.Customer;
+import com.sky.getyourway.exception.EmailInUseException;
 import com.sky.getyourway.repo.CustomerRepo;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,15 @@ public class CustomerServiceDB implements CustomerService {
 
     @Override
     public Customer createCustomer(Customer c) {
+        if (isEmailInUse(c.getEmail())) {
+            throw new EmailInUseException("Email is already in use");
+        }
         return this.repo.save(c);
+    }
+
+    public boolean isEmailInUse(String email) {
+        // returns TRUE if an email is found in the repo, otherwise returns FALSE
+        return this.repo.findByEmail(email) != null;
     }
 
     @Override

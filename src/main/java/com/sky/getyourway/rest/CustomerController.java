@@ -1,6 +1,7 @@
 package com.sky.getyourway.rest;
 
 import com.sky.getyourway.domain.Customer;
+import com.sky.getyourway.exception.EmailInUseException;
 import com.sky.getyourway.services.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,14 @@ public class CustomerController {
     // When user creates a new account and submits its data, a new user is created in our DB
     public ResponseEntity<Customer> registerCustomer(@RequestBody Customer c) {
         // Creates and adds the user to DB + responds to client with an HTTP status of created
-        return new ResponseEntity<>(this.service.createCustomer(c), HttpStatus.CREATED);
+        // NOTE: the try/catch is checking that the email  used to create new customer is NOT already assigned to other users
+        try {
+            return new ResponseEntity<>(this.service.createCustomer(c), HttpStatus.CREATED);
+        } catch (EmailInUseException eiue) {
+            return new ResponseEntity<>(HttpStatus.IM_USED);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @GetMapping("/login")
@@ -50,13 +58,13 @@ public class CustomerController {
         return ResponseEntity.ok(found);
     }
 
-    // TODO : getCustomer passing in an ID
-    // TODO : getAll (however user wont use it, might be useful for testing purposes)
     @GetMapping("/getAll")
     public List<Customer> getCustomers() {
         return this.service.getAll();
     }
 
+
+    // TODO : getCustomer passing in an ID
     // TODO : update (shall we have separate one for email ?)
     // TODO : deleteCustomer passing in an ID (might give the option to users to remove their profiles in future?)
     // TODO : run Postman requests and write tests

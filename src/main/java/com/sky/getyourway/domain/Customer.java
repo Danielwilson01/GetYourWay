@@ -90,6 +90,7 @@ public class Customer {
         return false; // password not changed
         }
 
+
     // TO STRING METHOD
     @Override
     public String toString() {
