@@ -4,10 +4,7 @@ import com.sky.getyourway.domain.Customer;
 import com.sky.getyourway.services.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -31,9 +28,14 @@ public class CustomerController {
         return new ResponseEntity<>(this.service.createCustomer(c), HttpStatus.CREATED);
     }
 
+    @GetMapping("/login/{name}")
+    public Customer getByEmail(@PathVariable String email) {
+        return this.service.findCustomerByEmail(email);
+    }
+
     // TODO : getCustomer passing in an ID
     // TODO : getAll (however user wont use it, might be useful for testing purposes
-    // TODO : update (shall we have separate one for email?)
+    // TODO : update (shall we have separate one for email ?)
     // TODO : deleteCustomer passing in an ID (might give the option to users to remove their profiles in future?)
     // TODO : run Postman requests and write tests
 

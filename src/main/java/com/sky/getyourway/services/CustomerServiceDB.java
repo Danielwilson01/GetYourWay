@@ -20,12 +20,12 @@ public class CustomerServiceDB implements CustomerService {
     }
 
     @Override
-    public Customer createCustomer(Customer u) {
-        return this.repo.save(u);
+    public Customer createCustomer(Customer c) {
+        return this.repo.save(c);
     }
 
     @Override
-    public Customer getUser(int id) {
+    public Customer getCustomer(int id) {
         // Using Optional<> as it is possible we find no user with that id
         Optional<Customer> found = this.repo.findById(id);
         return found.get();
@@ -38,7 +38,7 @@ public class CustomerServiceDB implements CustomerService {
 
     @Override
     public Customer updateCustomer(Integer id, String firstName, String lastName, String email, String password) {
-        Customer toUpdate = this.getUser(id);  // gets the user to be updated
+        Customer toUpdate = this.getCustomer(id);  // gets the user to be updated
 
         if (firstName != null) toUpdate.setFirstName(firstName);
         if (lastName != null) toUpdate.setLastName(lastName);
@@ -49,12 +49,17 @@ public class CustomerServiceDB implements CustomerService {
     }
 
     @Override
+    public Customer findCustomerByEmail(String email) {
+        return this.repo.findByEmail(email);
+    }
+
+    @Override
     public String removeCustomer(int id) {
         if (this.repo.existsById(id)) {
             this.repo.deleteById(id);
-            return "User with id " + id + " removed.";
+            return "Customer with id " + id + " removed.";
         } else {
-            return "User with id " + id + " NOT FOUND.";
+            return "Customer with id " + id + " NOT FOUND.";
             }
         }
 }
