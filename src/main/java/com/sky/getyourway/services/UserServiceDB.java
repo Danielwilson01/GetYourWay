@@ -1,11 +1,13 @@
 package com.sky.getyourway.services;
 
 import com.sky.getyourway.domain.User;
+import com.sky.getyourway.dtos.UserDTO;
 import com.sky.getyourway.exception.EmailInUseException;
 import com.sky.getyourway.repo.UserRepo;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,8 +43,12 @@ public class UserServiceDB implements UserService {
     }
 
     @Override
-    public List<User> getAll() {
-        return this.repo.findAll();
+    public List<UserDTO> getAll() {
+        List<UserDTO> dtos = new ArrayList<>();
+        for (User u: this.repo.findAll()) {
+            dtos.add(new UserDTO(u));
+        }
+        return dtos;
     }
 
     @Override

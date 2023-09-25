@@ -1,6 +1,7 @@
 package com.sky.getyourway.domain;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -15,6 +16,10 @@ public class User {
     private String lastName;
     private String email;
     private String password;
+
+    @OneToMany(mappedBy = "customer")
+    private List<Booking> bookings;
+
 
     // CONSTRUCTORS
     // Defined Constructors
@@ -81,6 +86,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
     }
 
     // Other methods

@@ -1,10 +1,13 @@
 package com.sky.getyourway.services;
 
 import com.sky.getyourway.domain.Booking;
+import com.sky.getyourway.dtos.BookingDTO;
 import com.sky.getyourway.repo.BookingRepo;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -49,5 +52,16 @@ public class BookingServiceDB implements BookingService {
     @Override
     public Booking findBookingByOrderReference(String orderReference) {
         return this.repo.findByOrderReference(orderReference);
+    }
+
+    @Override
+    public List<BookingDTO> getBookings() {
+        List<BookingDTO> dtos = new ArrayList<>();
+
+        for (Booking b: this.repo.findAll()) {
+            dtos.add(new BookingDTO(b));
+        }
+        return dtos;
+
     }
 }

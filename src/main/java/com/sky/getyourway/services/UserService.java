@@ -1,6 +1,7 @@
 package com.sky.getyourway.services;
 
 import com.sky.getyourway.domain.User;
+import com.sky.getyourway.dtos.UserDTO;
 
 import java.util.List;
 
@@ -8,7 +9,7 @@ public interface UserService {
 
     User createCustomer(User u) throws Exception;
     User getUser(Integer id);
-    List<User> getAll();
+    List<UserDTO> getAll();
     User updateUser(
             Integer id,
             String firstName,

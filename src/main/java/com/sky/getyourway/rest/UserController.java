@@ -1,6 +1,7 @@
 package com.sky.getyourway.rest;
 
 import com.sky.getyourway.domain.User;
+import com.sky.getyourway.dtos.UserDTO;
 import com.sky.getyourway.exception.EmailInUseException;
 import com.sky.getyourway.services.UserService;
 import org.springframework.http.HttpStatus;
@@ -61,7 +62,7 @@ public class UserController {
     }
 
     @GetMapping("/getAll")
-    public List<User> getUser() {
+    public List<UserDTO> getUser() {
         return this.service.getAll();
     }
 

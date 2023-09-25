@@ -12,10 +12,19 @@ public class Booking {
 
     private String orderReference;  // Duffel order reference
 
-    // TODO: add FK for user_id and relationship
+    @ManyToOne
+    private User customer;
 
     public int getId() {
         return id;
+    }
+
+    public User getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(User customer) {
+        this.customer = customer;
     }
 
     public void setId(int id) {
