@@ -4,7 +4,8 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-public class Customer {
+@Table(name = "users")
+public class User {
 
     // ATTRIBUTES
     @Id  // sets ID to be a primary key
@@ -17,7 +18,7 @@ public class Customer {
 
     // CONSTRUCTORS
     // Defined Constructors
-    public Customer(Integer id, String firstName, String lastName, String email, String password) {
+    public User(Integer id, String firstName, String lastName, String email, String password) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -25,7 +26,7 @@ public class Customer {
         this.password = password;
     }
 
-    public Customer(String firstName, String lastName, String email, String password) {
+    public User(String firstName, String lastName, String email, String password) {
         super();
         // id not needed as it is automatically assigned and autoincrement as it has been flagged as primary key
         this.firstName = firstName;
@@ -35,7 +36,7 @@ public class Customer {
     }
 
     // Default Constructor
-    public Customer() {
+    public User() {
         super();
     }
 
@@ -95,7 +96,7 @@ public class Customer {
     // TO STRING METHOD
     @Override
     public String toString() {
-        return "Customer{" +
+        return "User{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
@@ -108,8 +109,8 @@ public class Customer {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Customer customer = (Customer) o;
-        return Objects.equals(id, customer.id) && Objects.equals(firstName, customer.firstName) && Objects.equals(lastName, customer.lastName) && Objects.equals(email, customer.email) && Objects.equals(password, customer.password);
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(password, user.password);
     }
 
     @Override

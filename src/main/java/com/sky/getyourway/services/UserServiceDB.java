@@ -1,8 +1,8 @@
 package com.sky.getyourway.services;
 
-import com.sky.getyourway.domain.Customer;
+import com.sky.getyourway.domain.User;
 import com.sky.getyourway.exception.EmailInUseException;
-import com.sky.getyourway.repo.CustomerRepo;
+import com.sky.getyourway.repo.UserRepo;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -11,17 +11,17 @@ import java.util.Optional;
 
 @Service
 @Primary
-public class CustomerServiceDB implements CustomerService {
+public class UserServiceDB implements UserService {
 
-    private CustomerRepo repo;
+    private UserRepo repo;
 
     // Constructor injecting the repo
-    public CustomerServiceDB(CustomerRepo repo) {
+    public UserServiceDB(UserRepo repo) {
         this.repo = repo;
     }
 
     @Override
-    public Customer createCustomer(Customer c) {
+    public User createCustomer(User c) {
         if (isEmailInUse(c.getEmail())) {
             throw new EmailInUseException("Email is already in use");
         }
@@ -34,20 +34,20 @@ public class CustomerServiceDB implements CustomerService {
     }
 
     @Override
-    public Customer getCustomer(Integer id) {
+    public User getUser(Integer id) {
         // Using Optional<> as it is possible we find no user with that id
-        Optional<Customer> found = this.repo.findById(id);
+        Optional<User> found = this.repo.findById(id);
         return found.get();
     }
 
     @Override
-    public List<Customer> getAll() {
+    public List<User> getAll() {
         return this.repo.findAll();
     }
 
     @Override
-    public Customer updateCustomer(Integer id, String firstName, String lastName, String email, String passwordCurrent, String passwordNew) {
-        Customer toUpdate = this.getCustomer(id);  // gets the user to be updated
+    public User updateUser(Integer id, String firstName, String lastName, String email, String passwordCurrent, String passwordNew) {
+        User toUpdate = this.getUser(id);  // gets the user to be updated
 
         if (firstName != null) toUpdate.setFirstName(firstName);
         if (lastName != null) toUpdate.setLastName(lastName);
@@ -61,15 +61,15 @@ public class CustomerServiceDB implements CustomerService {
     }
 
     @Override
-    public Customer findCustomerByEmail(String email) {
+    public User findCustomerByEmail(String email) {
         return this.repo.findByEmailIgnoreCase(email);
     }
 
     @Override
-    public String removeCustomer(int id) {
+    public String removeUser(int id) {
         if (this.repo.existsById(id)) {
             this.repo.deleteById(id);
-            return "Customer with id " + id + " removed.";
+            return "User with id " + id + " removed.";
         } else {
             return  "NOT FOUND";
             }

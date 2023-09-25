@@ -1,7 +1,7 @@
 package com.sky.getyourway.services;
 
-import com.sky.getyourway.domain.Customer;
-import com.sky.getyourway.repo.CustomerRepo;
+import com.sky.getyourway.domain.User;
+import com.sky.getyourway.repo.UserRepo;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -14,27 +14,27 @@ import java.util.Optional;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-public class CustomerServicesDBUnitTest {
+public class UserServicesDBUnitTest {
 
     @Autowired
-    private CustomerService service;
+    private UserService service;
 
     @MockBean
-    private CustomerRepo repo;
+    private UserRepo repo;
 
     @Test
     void testCustomerEmailUpdate() {
         Integer id = 4;
 
-        Optional<Customer> found = Optional.of(
-                new Customer(id, "john", "cena", "cena@email", "blue"));
-        Customer updated = new Customer(id, "john", "cena", "john@email", "blue");
+        Optional<User> found = Optional.of(
+                new User(id, "john", "cena", "cena@email", "blue"));
+        User updated = new User(id, "john", "cena", "john@email", "blue");
 
         Mockito.when(this.repo.findById(id)).thenReturn(found);
         Mockito.when(this.repo.save(updated)).thenReturn(updated);
 
         Assertions.assertEquals(updated,
-                this.service.updateCustomer(id, "john", "cena", "john@email", "blue", "blue"));
+                this.service.updateUser(id, "john", "cena", "john@email", "blue", "blue"));
 
         Mockito.verify(this.repo, Mockito.times(1)).findById(id);
         Mockito.verify(this.repo, Mockito.times(1)).save(updated);
@@ -44,15 +44,15 @@ public class CustomerServicesDBUnitTest {
     void testCustomerPasswordUpdate() {
         Integer id = 4;
 
-        Optional<Customer> found = Optional.of(
-                new Customer(id, "john", "cena", "cena@email", "blue"));
-        Customer updated = new Customer(id, "john", "cena", "cena@email", "red");
+        Optional<User> found = Optional.of(
+                new User(id, "john", "cena", "cena@email", "blue"));
+        User updated = new User(id, "john", "cena", "cena@email", "red");
 
         Mockito.when(this.repo.findById(id)).thenReturn(found);
         Mockito.when(this.repo.save(updated)).thenReturn(updated);
 
         Assertions.assertEquals(updated,
-                this.service.updateCustomer(id, "john", "cena", "cena@email", "blue", "red"));
+                this.service.updateUser(id, "john", "cena", "cena@email", "blue", "red"));
 
         Mockito.verify(this.repo, Mockito.times(1)).findById(id);
         Mockito.verify(this.repo, Mockito.times(1)).save(updated);

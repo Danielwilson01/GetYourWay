@@ -1,6 +1,6 @@
 -- Drop Table & Create table queries
-DROP table `customer`;
-CREATE TABLE `customer` (
+DROP table `users`;
+CREATE TABLE `users` (
     `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
     `first_name` VARCHAR(100) NOT NULL,
     `last_name` VARCHAR(100) NOT NULL,

@@ -1,5 +1,5 @@
 -- Insert into query
-INSERT INTO `customer`
+INSERT INTO `users`
     (`first_name`, `last_name`, `email`, `password`)
 VALUES
     ('Jane', 'Doe', 'jane.doe@email.com', '123ABC'),

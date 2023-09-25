@@ -1,7 +1,7 @@
 package com.sky.getyourway.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sky.getyourway.domain.Customer;
+import com.sky.getyourway.domain.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -12,8 +12,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -23,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Sql(scripts = {"classpath:getyourway-schema.sql", "classpath:getyourway-data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @ActiveProfiles("test")
-public class CustomerIntegrationTest {
+public class UserIntegrationTest {
 
     @Autowired
     // MockMvc used to test Spring
@@ -35,7 +33,7 @@ public class CustomerIntegrationTest {
 
     @Test
     void testRegisterUser() throws Exception{
-        Customer testUser = new Customer("Mike", "Wilson", "mike.wilson@email.com", "password123");
+        User testUser = new User("Mike", "Wilson", "mike.wilson@email.com", "password123");
         String reqBody = this.mapper.writeValueAsString(testUser);  // converts the Java object in JSON
         System.out.println("CUSTOMER ==>> " + testUser);
         System.out.println("JSON ==>> " + reqBody);
@@ -56,8 +54,8 @@ public class CustomerIntegrationTest {
     @Test
     void testLoginSuccessful() throws Exception {
         // customer with id1 in H2 db:  ('Jane', 'Doe', 'jane.doe@email.com', '123ABC'),
-        // Expected response from Jane Doe log in is the Customer object
-        Customer expectedResponse = new Customer(1, "Jane", "Doe", "jane.doe@email.com", "123ABC");
+        // Expected response from Jane Doe log in is the User object
+        User expectedResponse = new User(1, "Jane", "Doe", "jane.doe@email.com", "123ABC");
         // We "translate" the expected response into JSON format
         String expectedResponseJson = this.mapper.writeValueAsString(expectedResponse);
 
@@ -73,8 +71,8 @@ public class CustomerIntegrationTest {
     @Test
     void testLoginIncorrectEmail() throws Exception {
         // customer with id1 in H2 db:  ('Jane', 'Doe', 'jane.doe@email.com', '123ABC'),
-        // Expected response from Jane Doe log in is the Customer object
-        Customer expectedResponse = new Customer(1, "Jane", "Doe", "jane.doe@email.com", "123ABC");
+        // Expected response from Jane Doe log in is the User object
+        User expectedResponse = new User(1, "Jane", "Doe", "jane.doe@email.com", "123ABC");
         // We "translate" the expected response into JSON format
         String expectedResponseJson = this.mapper.writeValueAsString(expectedResponse);
 
@@ -89,8 +87,8 @@ public class CustomerIntegrationTest {
     @Test
     void testLoginIncorrectPassword() throws Exception {
         // customer with id1 in H2 db:  ('Jane', 'Doe', 'jane.doe@email.com', '123ABC'),
-        // Expected response from Jane Doe log in is the Customer object
-        Customer expectedResponse = new Customer(1, "Jane", "Doe", "jane.doe@email.com", "123ABC");
+        // Expected response from Jane Doe log in is the User object
+        User expectedResponse = new User(1, "Jane", "Doe", "jane.doe@email.com", "123ABC");
         // We "translate" the expected response into JSON format
         String expectedResponseJson = this.mapper.writeValueAsString(expectedResponse);
 
