@@ -62,6 +62,7 @@ public class UserServiceDB implements UserService {
 
     @Override
     public User findCustomerByEmail(String email) {
+
         return this.repo.findByEmailIgnoreCase(email);
     }
 
