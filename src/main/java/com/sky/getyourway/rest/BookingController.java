@@ -19,12 +19,12 @@ public class BookingController {
         this.service = service;
     }
 
-    @PostMapping("add_booking")
+    @PostMapping("/add")
     public ResponseEntity<Booking> addBooking(@RequestBody Booking b) {
         return new ResponseEntity<>(this.service.addBooking(b), HttpStatus.CREATED);
     }
 
-    @GetMapping("/get")
+    @GetMapping("/getAll")
     public List<BookingDTO> getBookings() {
         return this.service.getBookings();
     }
