@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,22 +25,17 @@ public class BookingController {
     }
 
     @GetMapping("/getBooking/{userId}")
-    public List<BookingDTO> getBookings(@PathVariable int userId) {
-        List<BookingDTO>allBookings = new ArrayList<>();
-        allBookings = this.service.getBookings();
-        List<BookingDTO>results = new ArrayList<>();
-        for (BookingDTO booking : allBookings) {
-            if (booking.getCustomerId().equals(userId)) {
-                results.add(booking);
-            }
-        }
-        return results;
+    public ResponseEntity<List<BookingDTO>> getBookingsByUserID(@PathVariable int userId) {
+        List<BookingDTO> result = this.service.getBookingsByUserID(userId);
+        if (result.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        else return ResponseEntity.ok(result);
     }
 
-
     @GetMapping("/getAll")
-    public List<BookingDTO> getBookings() {
-        return this.service.getBookings();
+    public ResponseEntity<List<BookingDTO>>  getAllBookings() {
+        List<BookingDTO> result = this.service.getAllBookings();
+        if (result.isEmpty()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        else return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/cancel/{id}")

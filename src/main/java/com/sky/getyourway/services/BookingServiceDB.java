@@ -55,7 +55,7 @@ public class BookingServiceDB implements BookingService {
     }
 
     @Override
-    public List<BookingDTO> getBookings() {
+    public List<BookingDTO> getAllBookings() {
         List<BookingDTO> dtos = new ArrayList<>();
 
         for (Booking b: this.repo.findAll()) {
@@ -63,5 +63,18 @@ public class BookingServiceDB implements BookingService {
         }
         return dtos;
 
+    }
+
+    @Override
+    public List<BookingDTO> getBookingsByUserID(int userId) {
+        List<BookingDTO> dtos = new ArrayList<>();
+
+        for (Booking b: this.repo.findAll()) {
+            if(b.getCustomer().getId().equals(userId)) {
+                dtos.add(new BookingDTO(b));
+            }
+        }
+
+        return dtos;
     }
 }
