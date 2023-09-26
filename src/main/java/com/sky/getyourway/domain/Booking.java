@@ -15,6 +15,18 @@ public class Booking {
     @ManyToOne
     private User customer;
 
+    // CONSTRUCTOR
+    public Booking() {
+        super();
+    }
+
+    public Booking(String orderReference, User customer) {
+        this.orderReference = orderReference;
+        this.customer = customer;
+    }
+
+    // SETTERS & GETTERS
+
     public int getId() {
         return id;
     }
