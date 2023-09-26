@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,6 +24,20 @@ public class BookingController {
     public ResponseEntity<Booking> addBooking(@RequestBody Booking b) {
         return new ResponseEntity<>(this.service.addBooking(b), HttpStatus.CREATED);
     }
+
+    @GetMapping("/getBooking/{userId}")
+    public List<BookingDTO> getBookings(@PathVariable int userId) {
+        List<BookingDTO>allBookings = new ArrayList<>();
+        allBookings = this.service.getBookings();
+        List<BookingDTO>results = new ArrayList<>();
+        for (BookingDTO booking : allBookings) {
+            if (booking.getCustomerId().equals(userId)) {
+                results.add(booking);
+            }
+        }
+        return results;
+    }
+
 
     @GetMapping("/getAll")
     public List<BookingDTO> getBookings() {
