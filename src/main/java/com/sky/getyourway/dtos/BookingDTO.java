@@ -13,6 +13,8 @@ public class BookingDTO {
 
     private Integer customerId;
 
+    private FlightDTO flights;
+
     // CONSTRUCTORS
     public BookingDTO(Booking b) {
         this.id = b.getId();
@@ -53,5 +55,13 @@ public class BookingDTO {
 
     public void setCustomerId(Integer customerId) {
         this.customerId = customerId;
+    }
+
+    public FlightDTO getFlights() {
+        return flights;
+    }
+
+    public void setFlights(FlightDTO flights) {
+        this.flights = flights;
     }
 }
