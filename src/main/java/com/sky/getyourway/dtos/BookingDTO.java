@@ -1,6 +1,7 @@
 package com.sky.getyourway.dtos;
 
 import com.sky.getyourway.domain.Booking;
+import com.sky.getyourway.domain.User;
 
 import java.awt.print.Book;
 
@@ -24,6 +25,10 @@ public class BookingDTO {
     public BookingDTO() {
         super();
     }
+
+    public BookingDTO(String orderReference, User user) {
+    }
+
 
     // GETTERS & SETTERS
     public int getId() {
