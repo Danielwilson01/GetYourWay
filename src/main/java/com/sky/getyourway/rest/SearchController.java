@@ -28,7 +28,7 @@ public class SearchController {
 
     private DuffelApiClient client;
     public SearchController() {
-        client = new DuffelApiClient("duffel_test_0JLxWFOyyC7Va53B0658zEldoVi5Pvp65F-UQYeKvKB");
+        client = new DuffelApiClient("API_KEY_PLACEHOLDER");
     }
 
     @PostMapping("/flights")
