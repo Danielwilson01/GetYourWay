@@ -25,6 +25,11 @@ public class Booking {
         this.customer = customer;
     }
 
+    public Booking(String orderReference) {
+        this.orderReference = orderReference;
+        this.customer = customer;
+    }
+
     // SETTERS & GETTERS
 
     public int getId() {
