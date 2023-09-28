@@ -6,6 +6,9 @@ public class OfferDTO {
     private String departingAt;
     private String arrivingAt;
     private Integer stops;
+    private List<String> airportStopCode;
+
+    private List<String> airportStopName;
     private List<String> airline;
     private List<String> flightNumber;
     private String origin;
@@ -16,6 +19,22 @@ public class OfferDTO {
 
     public OfferDTO() {
 
+    }
+
+    public void setAirportStopName(List<String> airportStopName) {
+        this.airportStopName = airportStopName;
+    }
+
+    public List<String> getAirportStopName() {
+        return airportStopName;
+    }
+
+    public List<String> getAirportStopCode() {
+        return airportStopCode;
+    }
+
+    public void setAirportStopCode(List<String> airportStopCode) {
+        this.airportStopCode = airportStopCode;
     }
 
     public String getDepartingAt() {

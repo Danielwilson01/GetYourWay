@@ -3,19 +3,12 @@ package com.sky.getyourway.rest;
 import com.duffel.DuffelApiClient;
 import com.duffel.model.*;
 import com.duffel.model.request.OfferRequest;
-import com.duffel.model.request.OrderCancellationRequest;
-import com.duffel.model.request.OrderRequest;
-import com.duffel.model.request.Payment;
 import com.duffel.model.response.Offer;
 import com.duffel.model.response.OfferResponse;
-import com.duffel.model.response.Order;
-import com.duffel.model.response.OrderCancellation;
 import com.duffel.model.response.offer.Segment;
 import com.sky.getyourway.domain.Pair;
-import com.sky.getyourway.dtos.FlightDTO;
 import com.sky.getyourway.dtos.OfferDTO;
 import com.sky.getyourway.dtos.SearchDTO;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -28,7 +21,7 @@ public class SearchController {
 
     private DuffelApiClient client;
     public SearchController() {
-        client = new DuffelApiClient("API_KEY_PLACEHOLDER");
+        client = new DuffelApiClient("duffel_test_0JLxWFOyyC7Va53B0658zEldoVi5Pvp65F-UQYeKvKB");
     }
 
     @PostMapping("/flights")
@@ -120,10 +113,32 @@ public class SearchController {
 
             List<String> airlines = new ArrayList<>();
             List<String> flightNumbers = new ArrayList<>();
+            List<String> stopsCodes = new ArrayList<>();
+            List<String> airportStopsNames = new ArrayList<>();
+
+            System.out.println(offer.getId());
             for (Segment segment : offer.getSlices().get(0).getSegments()) {
                 airlines.add(segment.getOperatingCarrier().getName());
-                flightNumbers.add(segment.getOperatingCarrierFlightNumber());
+                if (segment.getOperatingCarrierFlightNumber() != null) {
+                    flightNumbers.add(segment.getOperatingCarrierFlightNumber());
+                } else {
+                    flightNumbers.add("TBC");
+                }
+                stopsCodes.add(segment.getOrigin().getIataCode());
+                airportStopsNames.add(segment.getOrigin().getName());
+                System.out.println("Stop code: " + segment.getOrigin().getIataCode());
+                System.out.println("Stop name: " + segment.getOrigin().getName());
             }
+
+            System.out.println();
+            airportStopsNames.remove(0);
+            stopsCodes.remove(0);
+
+            System.out.println(stopsCodes);
+            System.out.println(airportStopsNames);
+
+            outboundDTO.setAirportStopName(airportStopsNames);
+            outboundDTO.setAirportStopCode(stopsCodes);
             outboundDTO.setAirline(airlines);
             outboundDTO.setFlightNumber(flightNumbers);
             outboundDTO.setStops(offer.getSlices().get(0).getSegments().size() - 1);
@@ -138,7 +153,42 @@ public class SearchController {
             outboundDTO.setDestLong(offer.getSlices().get(0).getDestination().getLongitude());
             outboundDTO.setDuration(offer.getSlices().get(0).getDuration().toString());
 
-            System.out.println(offer.getSlices().get(0).getDuration().toString());
+            if (sdto.getReturnDate() != null && !sdto.getReturnDate().isEmpty()) {
+
+                airlines = new ArrayList<>();
+                flightNumbers = new ArrayList<>();
+                stopsCodes = new ArrayList<>();
+                airportStopsNames = new ArrayList<>();
+
+                for (Segment segment : offer.getSlices().get(1).getSegments()) {
+                    airlines.add(segment.getOperatingCarrier().getName());
+                    if (segment.getOperatingCarrierFlightNumber() != null) {
+                        flightNumbers.add(segment.getOperatingCarrierFlightNumber());
+                    } else {
+                        flightNumbers.add("TBC");
+                    }
+                    stopsCodes.add(segment.getOrigin().getIataCode());
+                    airportStopsNames.add(segment.getOrigin().getName());
+                }
+                airportStopsNames.remove(0);
+                stopsCodes.remove(0);
+
+                inboundDTO.setAirportStopName(airportStopsNames);
+                inboundDTO.setAirportStopCode(stopsCodes);
+                inboundDTO.setFlightNumber(flightNumbers);
+                inboundDTO.setStops(offer.getSlices().get(1).getSegments().size() - 1);
+                inboundDTO.setDepartingAt(String.valueOf(offer.getSlices().get(1).getSegments().get(0).getDepartingAt()));
+                inboundDTO.setArrivingAt(String.valueOf(offer.getSlices()
+                        .get(1)
+                        .getSegments()
+                        .get(offer.getSlices().get(1).getSegments().size() - 1).getArrivingAt()));
+                inboundDTO.setDestination(offer.getSlices().get(1).getDestination().getCityName());
+                inboundDTO.setOrigin(offer.getSlices().get(1).getOrigin().getCityName());
+                inboundDTO.setDestLat(offer.getSlices().get(1).getDestination().getLatitude());
+                inboundDTO.setDestLong(offer.getSlices().get(1).getDestination().getLongitude());
+                inboundDTO.setDuration(offer.getSlices().get(1).getDuration().toString());
+                journey.setInboundFlight(inboundDTO);
+            }
 
             journey.setOutboundFlight(outboundDTO);
 
