@@ -2,15 +2,36 @@ package com.sky.getyourway.domain;
 
 import com.sky.getyourway.dtos.OfferDTO;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 public class Pair {
 
+    private List<String> passengerIds;
+    private List<String> passengersType;
     private String offerId;
     private String currency;
-    private Integer price;
+    private BigDecimal price;
     private OfferDTO outboundFlight;
     private OfferDTO inboundFlight;
 
     public Pair() {}
+
+    public List<String> getPassengersType() {
+        return passengersType;
+    }
+
+    public void setPassengersType(List<String> passengersType) {
+        this.passengersType = passengersType;
+    }
+
+    public List<String> getPassengerIds() {
+        return passengerIds;
+    }
+
+    public void setPassengerIds(List<String> passengerIds) {
+        this.passengerIds = passengerIds;
+    }
 
     public String getOfferId() {
         return offerId;
@@ -28,11 +49,11 @@ public class Pair {
         this.currency = currency;
     }
 
-    public Integer getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

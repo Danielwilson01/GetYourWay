@@ -7,7 +7,6 @@ public class OfferDTO {
     private String arrivingAt;
     private Integer stops;
     private List<String> airportStopCode;
-
     private List<String> airportStopName;
     private List<String> airline;
     private List<String> flightNumber;

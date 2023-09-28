@@ -3,17 +3,24 @@ package com.sky.getyourway.rest;
 import com.duffel.DuffelApiClient;
 import com.duffel.model.*;
 import com.duffel.model.request.OfferRequest;
+import com.duffel.model.request.OrderRequest;
+import com.duffel.model.request.Payment;
 import com.duffel.model.response.Offer;
 import com.duffel.model.response.OfferResponse;
+import com.duffel.model.response.Order;
 import com.duffel.model.response.offer.Segment;
+import com.fasterxml.jackson.core.io.BigDecimalParser;
 import com.sky.getyourway.domain.Pair;
 import com.sky.getyourway.dtos.OfferDTO;
+import com.sky.getyourway.dtos.OrderDTO;
+import com.sky.getyourway.dtos.PassengerDTO;
 import com.sky.getyourway.dtos.SearchDTO;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/search")
@@ -96,7 +103,6 @@ public class SearchController {
 
         // offer response
         OfferResponse offerResponse = client.offerRequestService.post(request);
-        System.out.println("Offer response id: " + offerResponse.getId());
         List<Offer> offers = offerResponse.getOffers();
 
         List<Pair> offerDTOPairList = new ArrayList<>();
@@ -108,7 +114,7 @@ public class SearchController {
 
             Pair journey = new Pair();
             journey.setCurrency(offer.getBaseCurrency());
-            journey.setPrice(offer.getTotalAmount().intValue());
+            journey.setPrice(offer.getTotalAmount());
             journey.setOfferId(offer.getId());
 
             List<String> airlines = new ArrayList<>();
@@ -116,7 +122,6 @@ public class SearchController {
             List<String> stopsCodes = new ArrayList<>();
             List<String> airportStopsNames = new ArrayList<>();
 
-            System.out.println(offer.getId());
             for (Segment segment : offer.getSlices().get(0).getSegments()) {
                 airlines.add(segment.getOperatingCarrier().getName());
                 if (segment.getOperatingCarrierFlightNumber() != null) {
@@ -126,16 +131,10 @@ public class SearchController {
                 }
                 stopsCodes.add(segment.getOrigin().getIataCode());
                 airportStopsNames.add(segment.getOrigin().getName());
-                System.out.println("Stop code: " + segment.getOrigin().getIataCode());
-                System.out.println("Stop name: " + segment.getOrigin().getName());
             }
 
-            System.out.println();
             airportStopsNames.remove(0);
             stopsCodes.remove(0);
-
-            System.out.println(stopsCodes);
-            System.out.println(airportStopsNames);
 
             outboundDTO.setAirportStopName(airportStopsNames);
             outboundDTO.setAirportStopCode(stopsCodes);
@@ -192,11 +191,53 @@ public class SearchController {
 
             journey.setOutboundFlight(outboundDTO);
 
+            List<Passenger> passengersInOffer = offer.getPassengers();
+            List<String> passengerIds = new ArrayList<>();
+            for (Passenger p : passengersInOffer) {
+                passengerIds.add(p.getId());
+            }
+
+            journey.setPassengerIds(passengerIds);
+            journey.setPassengersType(passengerList.stream().map(p -> p.getType().toString()).collect(Collectors.toList()));
             offerDTOPairList.add(journey);
         }
 
 
         return offerDTOPairList;
+    }
+
+    @PostMapping("/order")
+    public List<String> order(@RequestBody OrderDTO odto) {
+
+        List<OrderPassenger> orderPassengers = new ArrayList<>();
+
+        for (PassengerDTO p : odto.getPassengersDetails()) {
+            OrderPassenger orderPassenger = new OrderPassenger();
+            orderPassenger.setEmail(p.getEmail());
+            orderPassenger.setGivenName(p.getGivenName());
+            orderPassenger.setFamilyName(p.getFamilyName());
+            orderPassenger.setTitle(p.getTitle());
+            orderPassenger.setBornOn(p.getDob());
+            orderPassenger.setId(p.getPassengerId());
+            orderPassenger.setPhoneNumber(p.getPhoneNumber());
+            orderPassenger.setGender(p.getGender());
+            orderPassengers.add(orderPassenger);
+        }
+
+        Payment payment = new Payment();
+        payment.setType(PaymentType.balance);
+        payment.setAmount(BigDecimalParser.parse(odto.getPrice()));
+        payment.setCurrency(odto.getCurrency());
+
+        OrderRequest orderRequest = new OrderRequest();
+        orderRequest.setType(OrderType.instant);
+        orderRequest.setPayments(List.of(payment));
+        orderRequest.setSelectedOffers(List.of(odto.getOfferId()));
+        orderRequest.setPassengers(orderPassengers);
+
+        Order order = client.orderService.post(orderRequest);
+
+        return List.of(order.getId(), order.getBookingReference());
     }
 
     public DuffelApiClient getClient() {
