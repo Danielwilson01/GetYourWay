@@ -3,18 +3,25 @@ package com.sky.getyourway.rest;
 import com.duffel.DuffelApiClient;
 import com.duffel.model.*;
 import com.duffel.model.request.OfferRequest;
+import com.duffel.model.request.OrderCancellationRequest;
 import com.duffel.model.request.OrderRequest;
 import com.duffel.model.request.Payment;
 import com.duffel.model.response.Offer;
 import com.duffel.model.response.OfferResponse;
 import com.duffel.model.response.Order;
+import com.duffel.model.response.OrderCancellation;
 import com.duffel.model.response.offer.Segment;
 import com.fasterxml.jackson.core.io.BigDecimalParser;
+import com.sky.getyourway.domain.Booking;
 import com.sky.getyourway.domain.Pair;
+import com.sky.getyourway.domain.User;
 import com.sky.getyourway.dtos.OfferDTO;
 import com.sky.getyourway.dtos.OrderDTO;
 import com.sky.getyourway.dtos.PassengerDTO;
 import com.sky.getyourway.dtos.SearchDTO;
+import com.sky.getyourway.services.BookingService;
+import com.sky.getyourway.services.BookingServiceDB;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -24,11 +31,14 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/search")
+@CrossOrigin()
 public class SearchController {
 
     private DuffelApiClient client;
-    public SearchController() {
-        client = new DuffelApiClient("duffel_test_0JLxWFOyyC7Va53B0658zEldoVi5Pvp65F-UQYeKvKB");
+    private BookingService bookingService;
+    public SearchController(DuffelApiClient client, BookingService bookingService) {
+        this.client = client;
+        this.bookingService = bookingService;
     }
 
     @PostMapping("/flights")
@@ -207,7 +217,7 @@ public class SearchController {
     }
 
     @PostMapping("/order")
-    public List<String> order(@RequestBody OrderDTO odto) {
+    public String order(@RequestBody OrderDTO odto) {
 
         List<OrderPassenger> orderPassengers = new ArrayList<>();
 
@@ -237,7 +247,28 @@ public class SearchController {
 
         Order order = client.orderService.post(orderRequest);
 
-        return List.of(order.getId(), order.getBookingReference());
+        User user = new User();
+        user.setId(odto.getUserId());
+
+        this.bookingService.addBooking(new Booking(order.getId(), user));
+
+        return order.getId();
+    }
+
+    @DeleteMapping("/cancel/{orderId}")
+    public String cancelBooking(@PathVariable String orderId) {
+
+        OrderCancellationRequest orderCancel = new OrderCancellationRequest();
+        orderCancel.setOrderId(orderId);
+
+        Booking booking = this.bookingService.getBookingByOrderReference(orderId);
+        this.bookingService.cancelBooking(booking.getId());
+
+        OrderCancellation cancellation = client.orderCancellationService.post(orderCancel);
+        cancellation = client.orderCancellationService.confirm(cancellation.getId());
+
+        return "🙅 Cancelled order: " + cancellation.getOrderId() + "\n" +
+                "Cancellation Id: " + cancellation.getId() + "\n" + "At: " + cancellation.getConfirmedAt();
     }
 
     public DuffelApiClient getClient() {
