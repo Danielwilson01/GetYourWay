@@ -66,6 +66,13 @@ public class SearchController {
     }
 
 
+    // *******GETTER*******
+    public DuffelApiClient getClient() {
+        return client;
+    }
+
+
+
     // *******REQUESTS*******
 
     /* Offers(): post request received from the front end when a user searches for a specific route
@@ -274,7 +281,7 @@ public class SearchController {
         // set passengers details
         List<OrderPassenger> orderPassengers = new ArrayList<>();
 
-        // Loop throught the passengers list from the order to set their details values to the
+        // Loop through the passengers list from the order to set their details values to the
         // actual info provided by the user for each of them
         for (PassengerDTO p : odto.getPassengersDetails()) {
             OrderPassenger orderPassenger = new OrderPassenger();
@@ -322,11 +329,11 @@ public class SearchController {
        */
     @DeleteMapping("/cancel/{orderId}")
     public String cancelBooking(@PathVariable String orderId) {
-        
+
         OrderCancellationRequest orderCancel = new OrderCancellationRequest();
         orderCancel.setOrderId(orderId);
 
-        Booking booking = this.bookingService.getBookingByOrderReference(orderId);
+        Booking booking = this.bookingService.findBookingByOrderReference(orderId);
         this.bookingService.cancelBooking(booking.getId());  // gets primary key for the corresponding duffle ref
 
         OrderCancellation cancellation = client.orderCancellationService.post(orderCancel); // Cancels with Duffel API
@@ -336,7 +343,4 @@ public class SearchController {
                 "Cancellation Id: " + cancellation.getId() + "\n" + "At: " + cancellation.getConfirmedAt();
     }
 
-    public DuffelApiClient getClient() {
-        return client;
-    }
 }

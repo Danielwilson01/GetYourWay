@@ -32,12 +32,6 @@ public class BookingServiceDB implements BookingService {
         return found.get();
     }
 
-    @Override
-    public Booking getBookingByOrderReference(String orderReference) {
-        Optional<Booking> found = Optional.ofNullable(this.repo.findByOrderReference(orderReference));
-        return found.get();
-    }
-
 
     @Override
     public String cancelBooking(Integer id) {
@@ -51,7 +45,8 @@ public class BookingServiceDB implements BookingService {
 
     @Override
     public Booking findBookingByOrderReference(String orderReference) {
-        return this.repo.findByOrderReference(orderReference);
+        Optional<Booking> found = Optional.ofNullable(this.repo.findByOrderReference(orderReference));
+        return found.get();
     }
 
     @Override
