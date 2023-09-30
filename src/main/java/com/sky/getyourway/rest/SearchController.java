@@ -12,16 +12,14 @@ import com.duffel.model.response.Order;
 import com.duffel.model.response.OrderCancellation;
 import com.duffel.model.response.offer.Segment;
 import com.fasterxml.jackson.core.io.BigDecimalParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.sky.getyourway.domain.Booking;
 import com.sky.getyourway.domain.Pair;
 import com.sky.getyourway.domain.User;
-import com.sky.getyourway.dtos.OfferDTO;
-import com.sky.getyourway.dtos.OrderDTO;
-import com.sky.getyourway.dtos.PassengerDTO;
-import com.sky.getyourway.dtos.SearchDTO;
+import com.sky.getyourway.dtos.*;
 import com.sky.getyourway.services.BookingService;
-import com.sky.getyourway.services.BookingServiceDB;
-import org.springframework.beans.factory.annotation.Value;
+import com.sky.getyourway.services.OrderService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -59,10 +57,13 @@ public class SearchController {
     // service for booking table to enable adding/removing bookings to the MySQL table
     private BookingService bookingService;
 
+    private OrderService orderService;
+
     // *******CONSTRUCTORS*******
-    public SearchController(DuffelApiClient client, BookingService bookingService) {
+    public SearchController(DuffelApiClient client, BookingService bookingService, OrderService orderService) {
         this.client = client;
         this.bookingService = bookingService;
+        this.orderService = orderService;
     }
 
 
@@ -343,4 +344,85 @@ public class SearchController {
                 "Cancellation Id: " + cancellation.getId() + "\n" + "At: " + cancellation.getConfirmedAt();
     }
 
+    @GetMapping("/view/{orderId}")
+    public FlightDTO viewBooking(@PathVariable String orderId) {
+
+        JsonNode outerNode = orderService.getOrderDetails(orderId);
+
+        JsonNode orderNode = outerNode.get("data");
+
+        String totalAmount = orderNode.get("total_amount").asText();
+        String totalCurrency = orderNode.get("total_currency").asText();
+
+        ArrayNode slices = (ArrayNode) orderNode.get("slices");
+
+        List<String> journeyTo = new ArrayList<>();
+        List<String> journeyBack = new ArrayList<>();
+
+        getJourney(slices, journeyTo, 0);
+
+        if (slices.size() > 1) {
+            getJourney(slices, journeyBack, 1);
+        }
+
+        List<String> passengers = new ArrayList<>();
+
+        ArrayNode passengerArray = (ArrayNode) orderNode.get("passengers");
+
+        for (JsonNode passenger : passengerArray) {
+
+            String firstName = passenger.get("given_name").asText();
+            String familyName = passenger.get("family_name").asText();
+
+            passengers.add(firstName + " " + familyName);
+        }
+
+        FlightDTO flightDTO = new FlightDTO();
+
+        flightDTO.setCost(totalAmount + " " + totalCurrency);
+        flightDTO.setJourneyBack(journeyBack);
+        flightDTO.setJourneyTo(journeyTo);
+        flightDTO.setPassengers(passengers);
+
+        return flightDTO;
+    }
+
+    private static void getJourney(ArrayNode slices, List<String> journey, int index) {
+
+        ArrayNode segmentsTo = (ArrayNode) slices.get(index).get("segments");
+
+        for (JsonNode segment : segmentsTo) {
+
+            JsonNode origin = segment.get("origin");
+            String airportName = origin.get("name").asText();
+            String iataCode = origin.get("iata_code").asText();
+            String flightNumber = segment.get("operating_carrier_flight_number").asText();
+            String name = segment.get("operating_carrier").get("name").asText();
+            String departTime = segment.get("departing_at").asText();
+
+            StringBuilder sb1 = new StringBuilder();
+            sb1.append("Origin: ").append(iataCode).append(" ").append(airportName);
+            journey.add(sb1.toString());
+            journey.add("Departing at: " + departTime);
+
+            JsonNode dest = segment.get("destination");
+            airportName = dest.get("name").asText();
+            iataCode = dest.get("iata_code").asText();
+
+            String arriveTime = segment.get("arriving_at").asText();
+
+            StringBuilder sb2 = new StringBuilder();
+            sb2.append("Destination: ").append(iataCode).append(" ").append(airportName);
+            journey.add(sb2.toString());
+            journey.add("Arriving at: " + arriveTime);
+
+            journey.add("Flight Number: " + flightNumber);
+            journey.add("Airline: " + name);
+
+            // Origin: DEL Indra Gandhi Airport     16:30 2024-01-02
+            // Destination: LHR London Heathrow     20:00 2024-01-02
+            // Flight Number: 1243
+            // Airline: Duffel Airways
+        }
+    }
 }
