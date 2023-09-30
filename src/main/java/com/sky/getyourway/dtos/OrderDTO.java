@@ -14,10 +14,18 @@ public class OrderDTO {
     private List<PassengerDTO> passengersDetails;
     private String currency;
     private String price;
-
+    private Integer userId;
 
     // *******CONSTRUCTORS*******
     public OrderDTO() {}
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
     public String getCurrency() {
         return currency;
