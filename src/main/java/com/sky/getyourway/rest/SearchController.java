@@ -22,6 +22,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/*
+Search Controller manages the request received from front end for:
+  - get flight offers
+     - receives the info inputted by user
+     - sends Duffle API the request to search offers for the parameters privided
+     - returns a list of offers to front end
+   - execute offer orders
+     - receives the offer selected from user from front end
+     - request from front end will include passengers details
+     - executes the order with TEST payment
+* */
+
 @RestController
 @RequestMapping("/search")
 public class SearchController {

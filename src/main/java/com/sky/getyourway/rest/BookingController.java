@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/* Controller for the Booking class
+* NOTE: the add and remove actions are used within the SearchController for bookings to be added when oder is executed and or cancelled
+* */
+
 @RestController
 @RequestMapping("/booking")
 public class BookingController {

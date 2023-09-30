@@ -1,10 +1,14 @@
 package com.sky.getyourway.dtos;
-
-import java.time.LocalDate;
 import java.util.Map;
+
+/*
+* Search DTO represents the information received from front-end
+* when a user requests a flight search
+* */
 
 public class SearchDTO {
 
+    // *******ATTRIBUTES*******
     private String airportTo;
     private String airportFrom;
     private String departureDate; // yyyy-mm-dd
@@ -13,6 +17,8 @@ public class SearchDTO {
     private int connections;
     private String cabinClass;
 
+
+    // *******SETTERS & GETTERS*******
     public String getAirportTo() {
         return airportTo;
     }

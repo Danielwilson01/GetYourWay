@@ -2,18 +2,28 @@ package com.sky.getyourway.dtos;
 
 import java.util.List;
 
+/*
+* OrderDTO represents the executed and confirmed (paid) order made by a user
+* on a selected offer returned from Duffle API
+* */
+
 public class OrderDTO {
 
+    // *******ATTRIBUTES*******
     private String offerId;
     private List<PassengerDTO> passengersDetails;
     private String currency;
     private String price;
+
+
+    // *******CONSTRUCTORS*******
     public OrderDTO() {}
 
     public String getCurrency() {
         return currency;
     }
 
+    // *******SETTERS & GETTERS*******
     public void setCurrency(String currency) {
         this.currency = currency;
     }

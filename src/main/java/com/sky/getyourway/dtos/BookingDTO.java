@@ -5,17 +5,22 @@ import com.sky.getyourway.domain.User;
 
 import java.awt.print.Book;
 
+/*
+DTO related to the Booking class
+ */
+
 public class BookingDTO {
 
+    // *******ATTRIBUTES*******
     private int id;
 
     private String orderReference;
 
-    private Integer customerId;
+    private Integer customerId;  // Foreign key
 
     private FlightDTO flights;
 
-    // CONSTRUCTORS
+    // *******CONSTRUCTORS*******
     public BookingDTO(Booking b) {
         this.id = b.getId();
         this.orderReference = b.getOrderReference();

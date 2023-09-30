@@ -4,11 +4,20 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
+/*
+Class representing User and marked as @Entity for MySQL database (table). This object/table will contain:
+- id: unique primary key
+- first name
+- last name
+- email
+- password
+ */
+
 @Entity
 @Table(name = "users")
 public class User {
 
-    // ATTRIBUTES
+    // *******ATTRIBUTES*******
     @Id  // sets ID to be a primary key
     @GeneratedValue(strategy = GenerationType.IDENTITY)  // Sets the ID to auto_increment
     private Integer id;
@@ -21,7 +30,7 @@ public class User {
     private List<Booking> bookings;
 
 
-    // CONSTRUCTORS
+    // *******CONSTRUCTORS*******
     // Defined Constructors
     public User(Integer id, String firstName, String lastName, String email, String password) {
         this.id = id;
@@ -46,8 +55,7 @@ public class User {
     }
 
 
-    // BEHAVIOURS (METHODS)
-    // Getters & Setters
+    // *******SETTERS & GETTERS*******
     public Integer getId() {
         return id;
     }
@@ -106,7 +114,7 @@ public class User {
         }
 
 
-    // TO STRING METHOD
+    // *******TO STRING*******
     @Override
     public String toString() {
         return "User{" +
@@ -118,6 +126,8 @@ public class User {
                 '}';
     }
 
+    // *******EQUALS & HASHCODE*******
+    // Methods needed for testing
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

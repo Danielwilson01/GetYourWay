@@ -1,7 +1,16 @@
 package com.sky.getyourway.dtos;
 
+/*
+* PassengerDTO represent a passenger to be added to a Duffle Order before executing the order.
+* Passengers will be the travellers for the trip, during the offer generation with Duffle we set the
+* number of passengers of each type to be travelling but not their details. When a user selects an
+* offer to proceed with, they will be required to provide all the below details so they can be added
+* to the final order.
+* */
+
 public class PassengerDTO {
 
+    // *******ATTRIBUTES*******
     private String email;
     private String givenName;
     private String familyName;
@@ -12,8 +21,12 @@ public class PassengerDTO {
     private String gender;
     private String infantId;
 
+
+    // *******CONSTRUCTORS*******
     PassengerDTO() {}
 
+
+    // *******SETTERS & GETTERS*******
     public String getEmail() {
         return email;
     }

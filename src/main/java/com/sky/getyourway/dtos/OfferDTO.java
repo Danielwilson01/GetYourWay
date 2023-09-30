@@ -2,7 +2,14 @@ package com.sky.getyourway.dtos;
 
 import java.util.List;
 
+/*
+* OfferDTO is to represent the information extracted from the Duffle API on a search
+* Searches can be for direct/connection flights, one-way/return, etc.
+* */
+
 public class OfferDTO {
+
+    // *******ATTRIBUTES*******
     private String departingAt;
     private String arrivingAt;
     private Integer stops;
@@ -16,10 +23,12 @@ public class OfferDTO {
     private Double destLat;
     private String duration;
 
+    // *******CONSTRUCTORS*******
     public OfferDTO() {
 
     }
 
+    // *******SETTERS & GETTERS*******
     public void setAirportStopName(List<String> airportStopName) {
         this.airportStopName = airportStopName;
     }
