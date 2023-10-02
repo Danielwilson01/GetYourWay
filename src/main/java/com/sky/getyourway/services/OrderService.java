@@ -15,13 +15,17 @@ public class OrderService {
 
     private DuffelApiClient client;
 
+    // Constructor injecting the Duffle client
     public OrderService(DuffelApiClient client) {
         this.client = client;
     }
 
     @Value("${api.key}")
-    private String apiKey;
+    private String apiKey;  // api.key environment variable
 
+
+    // Service created to make the requests to GET info from a placed/paid booking/order
+    // Used within the SearchController viewBooking() method
     public JsonNode getOrderDetails(String orderId) {
         RestTemplate restTemplate = new RestTemplate();
 
@@ -32,7 +36,7 @@ public class OrderService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 
-        /*
+        /* HEADERS:
         Accept-Encoding:gzip
         Accept:application/json
         Content-Type:application/json
@@ -45,21 +49,9 @@ public class OrderService {
 
         String apiUrl = "https://api.duffel.com/air/orders/" + orderId;
         // Make an HTTP request with the specified headers
-
-//        ResponseEntity<String> response = restTemplate.exchange(
-//                apiUrl,
-//                HttpMethod.GET,  // or other HTTP method
-//                httpEntity,
-//                String.class
-//        );
-//
-//        System.out.println(response);
-//        System.out.println(response.getBody());
-//        System.out.println(response.getBody().toString());
-
         ResponseEntity<JsonNode> response1 = restTemplate.exchange(
                 apiUrl,
-                HttpMethod.GET,  // or other HTTP method
+                HttpMethod.GET,
                 httpEntity,
                 JsonNode.class
         );
