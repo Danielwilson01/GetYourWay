@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 Search Controller manages the request received from front end for:
   - get flight offers
      - receives the info inputted by user
-     - sends Duffle API the request to search offers for the parameters privided
+     - sends Duffle API the request to search offers for the parameters provided
      - returns a list of offers to front end
    - execute offer orders
      - receives the offer selected from user from front end
@@ -325,7 +325,7 @@ public class SearchController {
 
 
     /* Cancel(): delete request received from the front end when a user selects a paid offer to be cancelled
-       @params orderId duffle ID identifying a specific offer
+       @params orderId duffle ID identifying a specific order/booking
        @return string confirming the booking
        */
     @DeleteMapping("/cancel/{orderId}")
@@ -344,31 +344,47 @@ public class SearchController {
                 "Cancellation Id: " + cancellation.getId() + "\n" + "At: " + cancellation.getConfirmedAt();
     }
 
+
+    /* viewBooking(): method to retrieve the information about a specific booking a user paid
+       @params orderId duffle ID identifying a specific order/booking
+       @return FlightDTO object containing all the info relating to the flights from that booking
+
+       NOTE: in this case we couldn't use the "client" object of DuffelApiClient and a new Service had to
+       be created for it (OrderService)
+       */
     @GetMapping("/view/{orderId}")
     public FlightDTO viewBooking(@PathVariable String orderId) {
 
+        // outerNode represents the main tree-structure of the JSON response of obtaining the order info from Duffle
+        // NOTE: each level of the JSON file is considered a node which we will use to traverse the tree
         JsonNode outerNode = orderService.getOrderDetails(orderId);
 
-        JsonNode orderNode = outerNode.get("data");
+        JsonNode orderNode = outerNode.get("data");  // node containing the info about the order
 
-        String totalAmount = orderNode.get("total_amount").asText();
+        String totalAmount = orderNode.get("total_amount").asText();  // .asText() retrieves the data from the node
         String totalCurrency = orderNode.get("total_currency").asText();
 
         ArrayNode slices = (ArrayNode) orderNode.get("slices");
 
+        // Lists journeyTo & journeyBack will contain the info relating to each way: outbound / inbound
         List<String> journeyTo = new ArrayList<>();
         List<String> journeyBack = new ArrayList<>();
 
+        // Retrieve the outbound data. Note that getJourney() is a private method created to be used, defined below
         getJourney(slices, journeyTo, 0);
 
+        // Retrieves the inbound (return flight) only if there's more than one slice (each slice is a "way" in/out)
         if (slices.size() > 1) {
             getJourney(slices, journeyBack, 1);
         }
 
+        // Passengers booked on that journey to be stored in a List
         List<String> passengers = new ArrayList<>();
 
+        // Using the node navigation made above, retrieve the passenger info
         ArrayNode passengerArray = (ArrayNode) orderNode.get("passengers");
 
+        // Iterates through all the passengers and retrieves the info to show (name/surname)
         for (JsonNode passenger : passengerArray) {
 
             String firstName = passenger.get("given_name").asText();
@@ -377,6 +393,7 @@ public class SearchController {
             passengers.add(firstName + " " + familyName);
         }
 
+        // FlightDTO is the DTO created for the return of info to be sent back to front end
         FlightDTO flightDTO = new FlightDTO();
 
         flightDTO.setCost(totalAmount + " " + totalCurrency);
@@ -387,10 +404,21 @@ public class SearchController {
         return flightDTO;
     }
 
+
+    /* getJourney() is a method created for its use within the GET request method viewBooking() to help retrieving
+    the info of the outbound and inbound flights booked
+    @params slices (array containing [outboundData, inboundData]. Index 1 can be null if the flight is one way)
+            journey (List of strings to hold the flight details)
+            index  (int to specify the index of the slice to get: 0 for outbound, 1 for inbound)
+    @return void no return as this method main goal is to add info to the respective journey Lists
+    */
     private static void getJourney(ArrayNode slices, List<String> journey, int index) {
 
+        // All info comes from the secgments which is the part to store each way's data
+        // Note that segments can contain nested segments if there are connectins between flights
         ArrayNode segmentsTo = (ArrayNode) slices.get(index).get("segments");
 
+        // Loop through all flights relating to that journey, gett and add the info
         for (JsonNode segment : segmentsTo) {
 
             JsonNode origin = segment.get("origin");
@@ -419,6 +447,7 @@ public class SearchController {
             journey.add("Flight Number: " + flightNumber);
             journey.add("Airline: " + name);
 
+            // Guidance for the Strings info to be stored:
             // Origin: DEL Indra Gandhi Airport     16:30 2024-01-02
             // Destination: LHR London Heathrow     20:00 2024-01-02
             // Flight Number: 1243
