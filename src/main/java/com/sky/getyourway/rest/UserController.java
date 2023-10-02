@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/*Constroller for the User class*/
+
 
 @RestController
+@CrossOrigin()
 public class UserController {
 
     private UserService service;

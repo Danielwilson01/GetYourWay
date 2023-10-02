@@ -9,11 +9,20 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/* Controller for the Booking class
+* NOTE: the add and remove actions were initially implemented on the controller however
+* the final structure of the project executes the BookingService from the Search Controller as
+* the actions are triggered from the order execution and deletion.
+* The methods here have been kept as test were build to test some of its individual functionality.
+* */
+
 @RestController
 @RequestMapping("/booking")
+@CrossOrigin()
 public class BookingController {
 
-    public BookingService service;
+    private BookingService service;
+
 
     public BookingController(BookingService service) {
         this.service = service;

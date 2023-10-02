@@ -11,10 +11,6 @@ public interface BookingService {
 
     Booking getBookingById(Integer id);
 
-    Booking getBookingByOrderReference(String orderReference);
-
-    // TODO: get the user ID searching by orderRef
-
     String cancelBooking(Integer id);
 
     Booking findBookingByOrderReference(String orderReference);

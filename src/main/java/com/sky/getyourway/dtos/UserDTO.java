@@ -6,8 +6,13 @@ import com.sky.getyourway.domain.User;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+DTO related to the User class
+ */
+
 public class UserDTO {
 
+    // *******ATTRIBUTES*******
     private Integer id;
 
     private String firstName;
@@ -18,9 +23,9 @@ public class UserDTO {
 
     private String password;
 
-    private List<BookingDTO> bookings;
+    private List<BookingDTO> bookings; // tracks the relationship user-bookings
 
-    // CONSTRUCTOR
+    // *******CONSTRUCTORS*******
     public UserDTO(User u) {
         this.id = u.getId();
         this.firstName = u.getFirstName();
@@ -34,13 +39,13 @@ public class UserDTO {
         }
     }
 
+    // Default constructor
     public UserDTO() {
         super();
     }
 
-    // GETTERS & SETTERS
 
-
+    // *******SETTERS & GETTERS*******
     public Integer getId() {
         return id;
     }
