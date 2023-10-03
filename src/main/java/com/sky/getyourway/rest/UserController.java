@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /*Constroller for the User class*/
 
@@ -44,19 +45,14 @@ public class UserController {
         }
     }
 
-    @GetMapping("/login")
-    public ResponseEntity<User> loginCustomer(
-        @RequestParam(name = "email") String email,
-        @RequestParam(name = "password") String password) {
+    @PostMapping("/login")
+    public ResponseEntity<User> loginCustomer(@RequestBody Map<String, String> loginData) {
 
-        System.out.println("EMAIL: " + email);
-        System.out.println("password: " + password);
-
-        User found = this.service.findCustomerByEmail(email.toLowerCase());
+        User found = this.service.findCustomerByEmail(loginData.get("email").toLowerCase());
         if (found == null) {
             // If no customer is found with that email, return a NOT FOUND status
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else if (!found.getPassword().equals(password)) {
+        } else if (!found.getPassword().equals(loginData.get("password"))) {
             // If a customer is found by email but the password doesn't match, return status UNAUTHORIZED
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
