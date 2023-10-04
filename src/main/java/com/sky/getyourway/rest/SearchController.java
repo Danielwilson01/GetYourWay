@@ -173,6 +173,7 @@ public class SearchController {
             journey.setCurrency(offer.getBaseCurrency());  // gets currency of the offer
             journey.setPrice(offer.getTotalAmount());  // gets total price of the offer
             journey.setOfferId(offer.getId());  // gets ID of the offer
+            journey.setCabinClass(offerResponse.getCabinClass());  // gets cabin class
 
             // Each slice (route) has segments containing the flight details of every flight for that route
             // note that we can have more than one flight is the user search is not constraint to direct flights only

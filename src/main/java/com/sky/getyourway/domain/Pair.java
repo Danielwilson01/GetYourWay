@@ -23,7 +23,7 @@ public class Pair {
     private BigDecimal price;
     private OfferDTO outboundFlight;
     private OfferDTO inboundFlight;
-
+    private String cabinClass;
 
     // *******CONSTRUCTORS*******
     public Pair() {}
@@ -84,5 +84,13 @@ public class Pair {
 
     public void setInboundFlight(OfferDTO inboundFlight) {
         this.inboundFlight = inboundFlight;
+    }
+
+    public String getCabinClass() {
+        return cabinClass;
+    }
+
+    public void setCabinClass(String cabinClass) {
+        this.cabinClass = cabinClass;
     }
 }
