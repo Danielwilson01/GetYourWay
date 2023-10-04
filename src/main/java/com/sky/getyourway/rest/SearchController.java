@@ -455,4 +455,25 @@ public class SearchController {
             // Airline: Duffel Airways
         }
     }
+
+    @GetMapping("/allUserBookings/{userId}")
+    public List<FlightDTO> allUserBookings(@PathVariable int userId) {
+        List<FlightDTO> results = new ArrayList<>();  // list to contain all Flights info for user orders
+
+        // get all orders for the given user
+        List<BookingDTO> bookings = this.bookingService.getBookingsByUserID(userId);
+        System.out.println("Bookings: " + bookings);
+
+
+        // Loop through all orders to get the FlightDTOs and add them to results
+        for(BookingDTO b : bookings) {
+            String orderRef = b.getOrderReference();
+            FlightDTO flight = viewBooking(orderRef);
+            System.out.println("Flight: " + flight);
+            results.add(flight);
+            System.out.println("Results: " + results);
+        }
+        return results;
+
+    }
 }
