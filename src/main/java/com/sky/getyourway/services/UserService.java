@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface UserService {
 
-    User createCustomer(User u) throws Exception;
+    User createCustomer(User u);
     User getUser(Integer id);
     List<UserDTO> getAll();
     User updateUser(

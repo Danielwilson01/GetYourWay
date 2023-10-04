@@ -5,6 +5,7 @@ import com.sky.getyourway.dtos.UserDTO;
 import com.sky.getyourway.exception.EmailInUseException;
 import com.sky.getyourway.repo.UserRepo;
 import org.springframework.context.annotation.Primary;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,9 +18,13 @@ public class UserServiceDB implements UserService {
 
     private UserRepo repo;
 
+    private BCryptPasswordEncoder encoder;
+
     // Constructor injecting the repo
-    public UserServiceDB(UserRepo repo) {
+    public UserServiceDB(UserRepo repo, BCryptPasswordEncoder encoder) {
+        super();
         this.repo = repo;
+        this.encoder = encoder;
     }
 
 
@@ -27,11 +32,12 @@ public class UserServiceDB implements UserService {
       @params c user object
       @return user added */
     @Override
-    public User createCustomer(User c) {
-        if (isEmailInUse(c.getEmail())) {
+    public User createCustomer(User user) {
+        if (isEmailInUse(user.getEmail())) {
             throw new EmailInUseException("Email is already in use");
         }
-        return this.repo.save(c);
+        user.setPassword(this.encoder.encode(user.getPassword()));
+        return this.repo.save(user);
     }
 
     /* isEmailInUse(): checks if the email is already in our DB
@@ -39,7 +45,7 @@ public class UserServiceDB implements UserService {
      @return true/false  */
     public boolean isEmailInUse(String email) {
         // returns TRUE if an email is found in the repo, otherwise returns FALSE
-        return this.repo.findByEmailIgnoreCase(email) != null;
+        return this.repo.findByEmailIgnoreCase(email).isPresent();
     }
 
     /* getUser(): gets a user given an ID
@@ -88,7 +94,7 @@ public class UserServiceDB implements UserService {
     @Override
     public User findCustomerByEmail(String email) {
 
-        return this.repo.findByEmailIgnoreCase(email);
+        return this.repo.findByEmailIgnoreCase(email).get();
     }
 
     /* removeUser(): removes the user from our DB

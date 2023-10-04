@@ -6,6 +6,7 @@ import com.sky.getyourway.exception.EmailInUseException;
 import com.sky.getyourway.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class UserController {
     private UserService service;
 
     public UserController(UserService service) {
+        super();
         this.service = service;
     }
 
@@ -35,14 +37,9 @@ public class UserController {
         // Creates and adds the user to DB + responds to client with an HTTP status of created
         // NOTE: the try/catch is checking that the email  used to create new customer is NOT already assigned to other users
 
-        try {
-            c.setEmail(c.getEmail().toLowerCase());
-            return new ResponseEntity<>(this.service.createCustomer(c), HttpStatus.CREATED);
-        } catch (EmailInUseException eiue) {
-            return new ResponseEntity<>(HttpStatus.IM_USED);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+
+        c.setEmail(c.getEmail().toLowerCase());
+        return new ResponseEntity<>(this.service.createCustomer(c), HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
@@ -85,5 +82,10 @@ public class UserController {
         String result = this.service.removeUser(id);
         if ("NOT FOUND".equalsIgnoreCase(result)) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         else return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/user")
+    public String getCurrent() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }
