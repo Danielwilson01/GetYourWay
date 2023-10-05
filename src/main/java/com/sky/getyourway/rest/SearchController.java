@@ -46,7 +46,6 @@ Search Controller manages the request received from front end for:
 
 @RestController
 @RequestMapping("/search")
-@CrossOrigin()
 public class SearchController {
 
     // Instance of the DuffelApiClient imported class
