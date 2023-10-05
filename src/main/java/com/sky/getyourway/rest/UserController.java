@@ -78,7 +78,8 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public User getCurrent() {
-        return this.service.findCustomerByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+    public UserDTO getCurrent() {
+        User user = this.service.findCustomerByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        return new UserDTO(user);
     }
 }

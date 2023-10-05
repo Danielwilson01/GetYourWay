@@ -353,7 +353,7 @@ public class SearchController {
        be created for it (OrderService)
        */
     @GetMapping("/view/{orderId}")
-    public FlightDTO viewBooking(@PathVariable String orderId) {
+    public BookingDTO viewBooking(@PathVariable String orderId) {
 
         // outerNode represents the main tree-structure of the JSON response of obtaining the order info from Duffle
         // NOTE: each level of the JSON file is considered a node which we will use to traverse the tree
@@ -401,7 +401,11 @@ public class SearchController {
         flightDTO.setJourneyTo(journeyTo);
         flightDTO.setPassengers(passengers);
 
-        return flightDTO;
+        BookingDTO bookingDTO = new BookingDTO();
+        bookingDTO.setFlights(flightDTO);
+        bookingDTO.setOrderReference(orderId);
+
+        return bookingDTO;
     }
 
 
@@ -456,8 +460,8 @@ public class SearchController {
     }
 
     @GetMapping("/allUserBookings/{userId}")
-    public List<FlightDTO> allUserBookings(@PathVariable int userId) {
-        List<FlightDTO> results = new ArrayList<>();  // list to contain all Flights info for user orders
+    public List<BookingDTO> allUserBookings(@PathVariable int userId) {
+        List<BookingDTO> results = new ArrayList<>();  // list to contain all Flights info for user orders
 
         // get all orders for the given user
         List<BookingDTO> bookings = this.bookingService.getBookingsByUserID(userId);
@@ -467,9 +471,9 @@ public class SearchController {
         // Loop through all orders to get the FlightDTOs and add them to results
         for(BookingDTO b : bookings) {
             String orderRef = b.getOrderReference();
-            FlightDTO flight = viewBooking(orderRef);
-            System.out.println("Flight: " + flight);
-            results.add(flight);
+            BookingDTO booking = viewBooking(orderRef);
+            System.out.println("Flight: " + booking.getFlights());
+            results.add(booking);
             System.out.println("Results: " + results);
         }
         return results;
