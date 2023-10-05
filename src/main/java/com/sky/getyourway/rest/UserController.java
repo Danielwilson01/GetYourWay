@@ -84,7 +84,7 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public String getCurrent() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+    public User getCurrent() {
+        return this.service.findCustomerByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 }
