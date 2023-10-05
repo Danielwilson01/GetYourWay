@@ -70,7 +70,7 @@ public class SecurityConfig {
                 response.setStatus(204);
             }
         });
-        http.authorizeRequests().antMatchers("/register", "/search/flights/**","/search/view/**").permitAll().anyRequest()
+        http.authorizeRequests().antMatchers("/register", "/search/flights/**", "/search/view/**").permitAll().anyRequest()
                 .authenticated();
         http.exceptionHandling().authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
         return http.build();
