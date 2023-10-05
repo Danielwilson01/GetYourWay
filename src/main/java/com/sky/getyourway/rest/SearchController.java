@@ -433,9 +433,9 @@ public class SearchController {
             String departTime = segment.get("departing_at").asText();
 
             StringBuilder sb1 = new StringBuilder();
-            sb1.append("Origin: ").append(iataCode).append(" ").append(airportName);
+            sb1.append("Origin: ").append(iataCode).append(" ").append(airportName).append(",");
             journey.add(sb1.toString());
-            journey.add("Departing at: " + departTime);
+            journey.add("Departing at: " + departTime + ",");
 
             JsonNode dest = segment.get("destination");
             airportName = dest.get("name").asText();
@@ -444,11 +444,11 @@ public class SearchController {
             String arriveTime = segment.get("arriving_at").asText();
 
             StringBuilder sb2 = new StringBuilder();
-            sb2.append("Destination: ").append(iataCode).append(" ").append(airportName);
+            sb2.append("Destination: ").append(iataCode).append(" ").append(airportName).append(",");
             journey.add(sb2.toString());
-            journey.add("Arriving at: " + arriveTime);
+            journey.add("Arriving at: " + arriveTime + ",");
 
-            journey.add("Flight Number: " + flightNumber);
+            journey.add("Flight Number: " + flightNumber + ",");
             journey.add("Airline: " + name);
 
             // Guidance for the Strings info to be stored:
