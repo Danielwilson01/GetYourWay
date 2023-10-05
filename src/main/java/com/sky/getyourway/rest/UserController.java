@@ -16,7 +16,6 @@ import java.util.Map;
 
 
 @RestController
-@CrossOrigin()
 public class UserController {
 
     private UserService service;
