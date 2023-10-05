@@ -81,7 +81,7 @@ public class UserServiceDB implements UserService {
         if (lastName != null) toUpdate.setLastName(lastName);
         if (email != null) toUpdate.setEmail(email);
         if (passwordCurrent != null && passwordNew != null && this.encoder.matches(passwordCurrent, toUpdate.getPassword())) {
-                toUpdate.setPassword(passwordNew);
+                toUpdate.setPassword(this.encoder.encode(passwordNew));
         }
 
         System.out.println(toUpdate);
