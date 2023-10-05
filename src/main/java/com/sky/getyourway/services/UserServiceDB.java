@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -74,15 +75,18 @@ public class UserServiceDB implements UserService {
      @return user for which details were updated with the updated details
      NOTE: password parameters are to check if the user has inserted the correct password before updating*/
     @Override
-    public User updateUser(Integer id, String firstName, String lastName, String email, String passwordCurrent, String passwordNew) {
-        User toUpdate = this.getUser(id);  // gets the user to be updated
+    public User updateUser(Map<String, String> updates) {
 
-        if (firstName != null) toUpdate.setFirstName(firstName);
-        if (lastName != null) toUpdate.setLastName(lastName);
+        User toUpdate = this.getUser(Integer.parseInt(updates.get("id")));  // gets the user to be updated
+        String email = updates.get("email");
+        String currentPassword = updates.get("currentPassword");
+        String newPassword = updates.get("newPassword");
+
         if (email != null) toUpdate.setEmail(email);
-        if (passwordCurrent != null && passwordNew != null && this.encoder.matches(passwordCurrent, toUpdate.getPassword())) {
-                toUpdate.setPassword(this.encoder.encode(passwordNew));
+        if (currentPassword != null && newPassword != null && this.encoder.matches(currentPassword, toUpdate.getPassword())) {
+                toUpdate.setPassword(this.encoder.encode(newPassword));
         }
+
 
         System.out.println(toUpdate);
         return this.repo.save(toUpdate);
