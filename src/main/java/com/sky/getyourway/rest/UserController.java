@@ -62,15 +62,9 @@ public class UserController {
     }
 
     @PatchMapping("/update")
-    public ResponseEntity<User> updateUser(
-            @RequestParam(name = "id", required = true ) Integer id,
-            @RequestParam(name = "firstName", required = false) String firstName,
-            @RequestParam(name = "lastName", required = false) String lastName,
-            @RequestParam(name = "email", required = false) String email,
-            @RequestParam(name = "passwordCurrent", required = false) String passwordCurrent,
-            @RequestParam(name = "passwordNew", required = false) String passwordNew) {
+    public ResponseEntity<User> updateUser(@RequestBody Map<String, String> updates) {
 
-        User updated = this.service.updateUser(id, firstName, lastName, email, passwordCurrent, passwordNew);
+        User updated = this.service.updateUser(updates);
         if (updated == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         return ResponseEntity.ok(updated);
@@ -84,7 +78,8 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public User getCurrent() {
-        return this.service.findCustomerByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+    public UserDTO getCurrent() {
+        User user = this.service.findCustomerByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        return new UserDTO(user);
     }
 }
