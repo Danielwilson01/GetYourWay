@@ -435,7 +435,9 @@ public class SearchController {
             StringBuilder sb1 = new StringBuilder();
             sb1.append("Origin: ").append(iataCode).append(" ").append(airportName).append(",");
             journey.add(sb1.toString());
-            journey.add("Departing at: " + departTime + ",");
+
+            String depStr = String.join(" ",departTime.split("T"));
+            journey.add("Departing at: " + depStr.substring(0, depStr.length() - 3) + ",");
 
             JsonNode dest = segment.get("destination");
             airportName = dest.get("name").asText();
@@ -446,7 +448,9 @@ public class SearchController {
             StringBuilder sb2 = new StringBuilder();
             sb2.append("Destination: ").append(iataCode).append(" ").append(airportName).append(",");
             journey.add(sb2.toString());
-            journey.add("Arriving at: " + arriveTime + ",");
+
+            String arrStr = String.join(" ",arriveTime.split("T"));
+            journey.add("Arriving at: " + arrStr.substring(0, arrStr.length() - 3) + ",");
 
             journey.add("Flight Number: " + flightNumber + ",");
             journey.add("Airline: " + name);
